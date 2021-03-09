@@ -29,7 +29,7 @@ public class CardinalLogger {
 
         - Level.ALL: This prints all log messages, irrespective of logging level
      */
-    private static Level DEFAULT_LOG_LEVEL = Level.INFO;
+    private static Level DEFAULT_LOG_LEVEL = Level.WARNING;
 
     public static Logger getLogger(Class<?> cls) {
         Logger logger = Logger.getLogger(cls.getName());
