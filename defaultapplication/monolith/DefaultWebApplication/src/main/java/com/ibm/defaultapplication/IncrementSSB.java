@@ -14,28 +14,26 @@ import com.ibm.defaultapplication.Increment;
 
 @Stateless(name="IncrementEJB")
 public class IncrementSSB {
-  @PersistenceContext(unitName="DefaultApplicationJPA")
-  private EntityManager em;
+  private static int hitcount = 0;
+  //@PersistenceContext(unitName="DefaultApplicationJPA")
+  //private EntityManager em;
 
   public int getTheValue() {
-    Increment inc = em.find(Increment.class, "HitCount");
-    return inc.getThevalue();
+    //Increment inc = em.find(Increment.class, "HitCount");
+    //return inc.getThevalue();
+    return hitcount;
   }
 
   public int increment() {
-	int value = 0;
+	  /*int value = 0;
     synchronized (this) {
         Increment inc = em.find(Increment.class, "HitCount");
         if (inc == null) {
-        	inc = new Increment();
-        	inc.setPrimarykey("HitCount");
-        	inc.setThevalue(0);
-        }
-        value = inc.getThevalue();
-        value++;
         inc.setThevalue(value);
         em.persist(inc);
     }
-    return value;
+    return value;*/
+    hitcount+=1;
+    return hitcount;
   }
 }
