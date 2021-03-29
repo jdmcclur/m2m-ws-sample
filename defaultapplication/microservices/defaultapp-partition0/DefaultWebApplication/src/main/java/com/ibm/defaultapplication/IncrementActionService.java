@@ -3,6 +3,7 @@ package com.ibm.defaultapplication;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonBuilderFactory;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -33,6 +34,7 @@ import com.ibm.defaultapplication.IncrementSSB;
 @Path("/IncrementActionService")
 public class IncrementActionService {
     private static final Logger klu__logger = CardinalLogger.getLogger(IncrementActionService.class);
+    private static final JsonBuilderFactory factory = Json.createBuilderFactory(null);
 
     // default constructor service
     @POST
@@ -42,7 +44,7 @@ public class IncrementActionService {
         IncrementAction instIncrementAction = new IncrementAction();
         String refid = ClusterObjectManager.putObject(instIncrementAction);
         instIncrementAction.setKlu__referenceID(refid);
-        JsonObject jsonobj = Json
+        JsonObject jsonobj = factory
             .createObjectBuilder()
             .add("return_value", refid)
             .build();
@@ -107,7 +109,7 @@ public class IncrementActionService {
             klu__logger.warning(msg);
             throw new WebApplicationException(msg, t, CardinalException.APPLICATION_EXCEPTION);
         }
-        JsonObjectBuilder jsonresp = Json.createObjectBuilder();
+        JsonObjectBuilder jsonresp = factory.createObjectBuilder();
         JsonObject jsonobj = jsonresp.add("return_value", String.valueOf(response)).build();
         klu__logger.info("[IncrementAction] Returning JSON object: "+jsonobj.toString());
         return Response
@@ -134,7 +136,7 @@ public class IncrementActionService {
             klu__logger.warning(msg);
             throw new WebApplicationException(msg, t, CardinalException.APPLICATION_EXCEPTION);
         }
-        JsonObjectBuilder jsonresp = Json.createObjectBuilder();
+        JsonObjectBuilder jsonresp = factory.createObjectBuilder();
         JsonObject jsonobj = jsonresp.add("return_value", String.valueOf(response)).build();
         klu__logger.info("[IncrementAction] Returning JSON object: "+jsonobj.toString());
         return Response

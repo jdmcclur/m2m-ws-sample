@@ -8,6 +8,7 @@ import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -15,6 +16,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 
@@ -33,11 +35,12 @@ import com.ibm.defaultapplication.IncrementSSB;
 public class IncrementAction implements KluInterface {
     private String klu__referenceID = "";
     private static String klu__serviceURI;
-    private static Client klu__client;
+    //private static Client klu__client;
+    private static WebTarget klu__target;
+    private static final JsonReaderFactory factory = Json.createReaderFactory(null);
     private static final Logger klu__logger = CardinalLogger.getLogger(IncrementAction.class);
 
     static {
-        klu__client = ClientBuilder.newClient();
 
         klu__logger.info("Static initializer of IncrementAction of cluster partition0");
 
@@ -62,6 +65,7 @@ public class IncrementAction implements KluInterface {
             throw new java.lang.RuntimeException("Invalid URI for partition partition0, "+
                 "service IncrementActionService: "+klu__serviceURI, e);
         }
+        klu__target = ClientBuilder.newBuilder().build().target(klu__serviceURI);
 
         klu__logger.info("partition0 IncrementActionService URI = " + klu__serviceURI);
     }
@@ -69,13 +73,13 @@ public class IncrementAction implements KluInterface {
     // default constructor (generated)
     public IncrementAction() {
         Response svc_response =
-            klu__client.target(klu__serviceURI) 
+            klu__target
             .path("IncrementAction_default_ctor") 
             .request(MediaType.APPLICATION_JSON) 
             .post(Entity.text(""), Response.class);
         String response_json_str = svc_response.readEntity(String.class);
         klu__logger.info("[IncrementAction()] Response JSON string: "+response_json_str);
-        JsonReader json_reader = Json.createReader(new StringReader(response_json_str));
+        JsonReader json_reader = factory.createReader(new StringReader(response_json_str));
         JsonObject response_json = json_reader.readObject();
         setKlu__referenceID(response_json.getString("return_value"));
         svc_response.close();
@@ -89,7 +93,7 @@ public class IncrementAction implements KluInterface {
         setKlu__referenceID(referenceId.getString());
         Form form = new Form();
         form.param("klu__referenceID", getKlu__referenceID());
-        klu__client.target(klu__serviceURI)
+        klu__target
             .path("incObjectCount")
             .request()
             .post(Entity.form(form));
@@ -109,7 +113,7 @@ public class IncrementAction implements KluInterface {
     public void finalize() {
         Form form = new Form();
         form.param("klu__referenceID", getKlu__referenceID());
-        klu__client.target(klu__serviceURI)
+        klu__target
             .path("decObjectCount")
             .request()
             .post(Entity.form(form));
@@ -129,7 +133,7 @@ public class IncrementAction implements KluInterface {
         // call service and get encoded response from response JSON
         Response svc_response;
         try {
-            svc_response = klu__client.target(klu__serviceURI)
+            svc_response = klu__target
                 .path("getTheValue")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.form(form), Response.class);
@@ -141,7 +145,7 @@ public class IncrementAction implements KluInterface {
         }
         String response_json_str = svc_response.readEntity(String.class);
         klu__logger.info("[IncrementAction] Response JSON string: "+response_json_str);
-        JsonReader json_reader = Json.createReader(new StringReader(response_json_str));
+        JsonReader json_reader = factory.createReader(new StringReader(response_json_str));
         JsonObject response_json = json_reader.readObject();
         String response = response_json.getString("return_value");
         svc_response.close();
@@ -157,7 +161,7 @@ public class IncrementAction implements KluInterface {
         // call service and get encoded response from response JSON
         Response svc_response;
         try {
-            svc_response = klu__client.target(klu__serviceURI)
+            svc_response = klu__target
                 .path("increment")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.form(form), Response.class);
@@ -169,7 +173,7 @@ public class IncrementAction implements KluInterface {
         }
         String response_json_str = svc_response.readEntity(String.class);
         klu__logger.info("[IncrementAction] Response JSON string: "+response_json_str);
-        JsonReader json_reader = Json.createReader(new StringReader(response_json_str));
+        JsonReader json_reader = factory.createReader(new StringReader(response_json_str));
         JsonObject response_json = json_reader.readObject();
         String response = response_json.getString("return_value");
         svc_response.close();
